@@ -26,8 +26,13 @@ function mostrarImagen(receta) {
         <div>
             <strong>Nombre:</strong> ${receta.name} <br>
             <strong>Tiempo:</strong> ${receta.tiempo}
+            <button class="borrar-btn">Borrar</button>
         </div>
     `;
+    const btnBorrar = tarjeta.querySelector('.borrar-btn');
+    btnBorrar.addEventListener('click', () => {
+        borrarReceta(receta.id);
+    });
     contenedor.appendChild(tarjeta);
 }
 
@@ -35,4 +40,11 @@ function getData(){
     fetch(apiURL)
     .then(respuesta => respuesta.json())
     .then (data => console.log(data))
+}
+
+function borrarReceta(id) {
+    fetch(`${apiURL}/${id}`, {
+        method: "DELETE"
+    })
+    .then(() => getData());
 }
