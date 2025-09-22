@@ -55,7 +55,10 @@ function borrarReceta(id) {
     fetch(`${apiURL}/${id}`, {
         method: "DELETE"
     })
-    .then(() => getData());
+    .then(() => {
+        alert("Receta borrada");
+        getData();
+    });
 }
 
 // Cargar recetas al iniciar la página
