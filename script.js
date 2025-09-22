@@ -12,34 +12,43 @@ document.getElementById("buscador").addEventListener("click", () =>{
             "Content-Type": "application/json"
         },
         body: JSON.stringify(receta)
+    })
+    .then(() => {
+        getData(); // Recarga la lista de recetas con sus IDs
+        alert("Receta agregada exitosamente");
+        // Limpia los campos
+        document.getElementById("nombre").value = "";
+        document.getElementById("tiempo").value = "";
+        document.getElementById("imagen").value = "";
     });
-    mostrarImagen(receta); // Mostrar la imagen y los datos en la página
-    alert("Receta agregada exitosamente")
-})
+});
 
-function mostrarImagen(receta) {
+function mostrarRecetas(recetas) {
     const contenedor = document.getElementById("foto-receta");
-    const tarjeta = document.createElement("div");
-    tarjeta.className = "receta-tarjeta";
-    tarjeta.innerHTML = `
-        <img src="${receta.imagen}" alt="Imagen de la receta">
-        <div>
-            <strong>Nombre:</strong> ${receta.name} <br>
-            <strong>Tiempo:</strong> ${receta.tiempo}
-            <button class="borrar-btn">Borrar</button>
-        </div>
-    `;
-    const btnBorrar = tarjeta.querySelector('.borrar-btn');
-    btnBorrar.addEventListener('click', () => {
-        borrarReceta(receta.id);
+    contenedor.innerHTML = ""; // Limpia antes de mostrar
+    recetas.forEach(receta => {
+        const tarjeta = document.createElement("div");
+        tarjeta.className = "receta-tarjeta";
+        tarjeta.innerHTML = `
+            <img src="${receta.imagen}" alt="Imagen de la receta">
+            <div>
+                <strong>Nombre:</strong> ${receta.name} <br>
+                <strong>Tiempo:</strong> ${receta.tiempo}
+                <button class="borrar-btn">Borrar</button>
+            </div>
+        `;
+        const btnBorrar = tarjeta.querySelector('.borrar-btn');
+        btnBorrar.addEventListener('click', () => {
+            borrarReceta(receta.id);
+        });
+        contenedor.appendChild(tarjeta);
     });
-    contenedor.appendChild(tarjeta);
 }
 
 function getData(){
     fetch(apiURL)
     .then(respuesta => respuesta.json())
-    .then (data => console.log(data))
+    .then (data => mostrarRecetas(data));
 }
 
 function borrarReceta(id) {
@@ -48,3 +57,6 @@ function borrarReceta(id) {
     })
     .then(() => getData());
 }
+
+// Cargar recetas al iniciar la página
+window.onload = getData;
